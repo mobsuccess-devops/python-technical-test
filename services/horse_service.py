@@ -1,3 +1,4 @@
+from typing import Optional
 import pandas as pd
 from datetime import datetime
 from models.horse import Horse
@@ -7,7 +8,12 @@ import services
 class HorseService:
     """Horse service."""
 
-    def get(self, horseId: str, categoryFilter: str, yearFilter: int) -> Horse:
+    def get(
+            self,
+            horseId: str,
+            categoryFilter: Optional[str],
+            yearFilter: Optional[int],
+            ) -> Optional[Horse]:
         """Get and return one Horse.
 
         Args:
@@ -17,21 +23,23 @@ class HorseService:
 
         Returns: the horse entity, None if we failed to fetch horse
         """
-        horse: Horse = services.ffe.load(horseId)
+        horse = services.ffe.load(horseId)
 
         if horse is None:
             return None
 
         filtered = filter(
             lambda horseback: (
-                categoryFilter == None or horseback.category == categoryFilter
+                categoryFilter is None or horseback.category == categoryFilter
             )
             and (
-                datetime.strptime(horseback.date, "%d/%m/%Y").date().year == yearFilter
+                datetime.strptime(horseback.date, "%d/%m/%Y").date().year
+                == yearFilter
             ),
             horse.horsebacks,
         )
         horse.horsebacks = list(filtered)
+
         return horse
 
     def to_dataframe(self, horse: Horse) -> pd.DataFrame:
@@ -66,7 +74,11 @@ class HorseService:
             row = {"Horse": horse.name, "Category": key}
             row["Points"] = horseback.points
             result.append(
-                {"Horse": horse.name, "Category": key, "Points": horseback.points}
+                {
+                    "Horse": horse.name,
+                    "Category": key,
+                    "Points": horseback.points
+                }
             )
 
         return result

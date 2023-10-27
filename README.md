@@ -8,16 +8,16 @@ Install poetry using pip:
 pip install poetry
 ```
 
+Set virtual environment location to local folder:
+
+```bash
+poetry config virtualenvs.in-project true
+```
+
 Install dependencies:
 
 ```bash
 poetry install
-```
-
-Load the virtual environment:
-
-```bash
-poetry shell
 ```
 
 Run the server:
@@ -25,6 +25,9 @@ Run the server:
 ```bash
 poetry run python main.py
 ```
+
+> **Note**
+> 
 
 ## Part 1
 

@@ -1,10 +1,8 @@
-from flask import Flask, request, abort, jsonify, Response
-import random
+from flask import Flask, request, jsonify
 import datetime
 import concurrent.futures
 
 import services
-from models.horse import Horse
 
 app = Flask(__name__)  # Create a flask app
 
@@ -19,19 +17,17 @@ def base_route():
     date = datetime.datetime.now()
     print(date.strftime("%Y-%m-%d %H:%M:%S.%f"))
 
-    return Response(
+    return jsonify(
         {
             "routes_available": [
                 {
                     "route": "/horse/<horseId>?category=",
                     "verb": "GET",
-                    "description": "Return the horse results for 2023",
+                    "description": "Return the horse results for current year",
                 }
             ]
-        },
-        mimetype="application/json",
+        }
     )
-    return
 
 
 @app.route("/horse/<horseId>")
@@ -45,18 +41,17 @@ def get_horse_results(horseId):
       category : optional category to filter on
 
     Returns: the Horse object
-
     """
     args = request.args
+
     print(f"Category:{args.get('category', default=None, type=str)}")
 
     # To be implemented
-
-    abort(404, description="Resource not found")
+    raise NotImplementedError()
 
 
 # Set the correct methods for this route
-@app.route("/horse/export-podium", methods=[""])
+@app.route("/horse/export-podium", methods=["TODO"])
 def export_podium():
     """Return the podium per categories for 3 best horses.
 
@@ -80,4 +75,4 @@ def bad_request(e):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=random.randint(2000, 9000))
+    app.run(host="0.0.0.0", port=8800)
