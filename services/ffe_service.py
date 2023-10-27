@@ -1,4 +1,5 @@
 import re
+from typing import Optional
 from pyquery import PyQuery
 from models.horseback import Horseback
 from models.horse import Horse
@@ -11,7 +12,7 @@ class FfeService:
           but feel free to do some modifications if you want.
     """
 
-    def load(self, id: str) -> Horse:
+    def load(self, id: str) -> Optional[Horse]:
         """Loads and parse Horse on FFE website."""
         pq = PyQuery(
             url=f"https://ffecompet.ffe.com/cheval/detail/performances/{id}?direction=0&countResultPerPage=60&page=1"
@@ -26,7 +27,7 @@ class FfeService:
 
         # Get Horse name
         p = pq("p").filter(".inline")
-        horse.name = re.search("[A-Z\s]{2,}", p.html()).group().strip()
+        horse.name = re.search("[A-Z\s]{2,}", p.html()).group().strip()  # type: ignore
 
         # Parse HTML table for Horseback results
         rows = pq("tr").filter(".d-none")
@@ -41,11 +42,11 @@ class FfeService:
                 continue
 
             # Fill results
-            horseback.date = date
-            horseback.place = PyQuery(columns[1]).text()
-            horseback.category = PyQuery(columns[2]).text()
-            horseback.discipline = PyQuery(columns[4]).text()
-            horseback.ranking = PyQuery(columns[7]).text()
+            horseback.date = date  # type: ignore
+            horseback.place = PyQuery(columns[1]).text()  # type: ignore
+            horseback.category = PyQuery(columns[2]).text()  # type: ignore
+            horseback.discipline = PyQuery(columns[4]).text()  # type: ignore
+            horseback.ranking = PyQuery(columns[7]).text()  # type: ignore
 
             horse.horsebacks
             horse.horsebacks.append(horseback)
